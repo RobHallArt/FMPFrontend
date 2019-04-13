@@ -29,5 +29,7 @@ class ofApp : public ofBaseApp{
 		vector<react> reacts;
 
 		ofImage angryReact;
+
+		string getExtFromPath(string _path);
 		
 };

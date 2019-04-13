@@ -10,8 +10,18 @@ class content {
 		ofVideoPlayer video;
 		vector<ofImage> slideshow;
 
-		float controversial;
-		float politicalStance;
+		bool importSuccess;
+
+		string path;
+		string datPath;
+
+		ofFile file;
+
+		glm::vec2 social;
+		glm::vec2 econ;
+
+		float religeous;
+		float confidence;
 
 		content(string _path);
 
@@ -24,6 +34,7 @@ class content {
 		void draw();
 
 		string getExtFromPath(string _path);
+
 		
 		
 };

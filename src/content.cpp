@@ -5,12 +5,24 @@ content::content(string _path) {
 }
 
 void content::importContent(string _path) {
-	if (getExtFromPath(_path) == "jpg") {
-		image.load(_path);
+	image.load(_path);
+	std::cout << _path << std::endl;
+
+	datPath = ofSplitString(_path, ".")[0] + ".txt";
+
+	if (file.open(ofToDataPath(ofSplitString(_path, ".")[0] + ".txt"), ofFile::ReadWrite, false)) {
+
+		std::cout << ofSplitString(_path, ".")[0] + ".txt" << std::endl;
+		importSuccess = true;
+
 	}
-	if (getExtFromPath(_path) == "png") {
-		image.load(_path);
+	else {
+		std::cout << "Didn't Work" << std::endl;
+		//file.create();
+		importSuccess = false;
 	}
+
+	parseMeta();
 }
 
 void content::getContentType() {
@@ -18,7 +30,22 @@ void content::getContentType() {
 }
 
 void content::parseMeta() {
+	if (importSuccess) {
 
+		ofBuffer buf = file.readToBuffer();
+		std::cout << buf.getText() << std::endl;
+		string str = buf.getText();
+
+		social.x = ofToFloat(ofSplitString(str, ",")[0]);
+		social.y = ofToFloat(ofSplitString(str, ",")[1]);
+
+		econ.x = ofToFloat(ofSplitString(str, ",")[2]);
+		econ.y = ofToFloat(ofSplitString(str, ",")[3]);
+
+		religeous = ofToFloat(ofSplitString(str, ",")[4]);
+		confidence = ofToFloat(ofSplitString(str, ",")[5]);
+
+	}
 }
 
 void content::draw() {

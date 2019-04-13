@@ -17,8 +17,9 @@ void ofApp::setup(){
 
 	//go through and print out all the paths
 	for (int i = 0; i < contentDir.size(); i++) {
-		std::cout << contentDir.getPath(i) << std::endl;
-		contents.push_back(content(contentDir.getPath(i)));
+		if (getExtFromPath(contentDir.getPath(i)) == "jpg" || getExtFromPath(contentDir.getPath(i)) == "png") {
+			contents.push_back(content(contentDir.getPath(i)));
+		}
 		
 	}
 
@@ -78,6 +79,23 @@ void ofApp::mousePressed(int x, int y, int button){
 	for (int i = 0; i < reacts.size(); i++) {
 		reacts[i].clickAnim(glm::vec2(x, y), i);
 		if (reacts[i].amClicked(glm::vec2(x, y), i)) {
+
+
+			string save;
+
+			save = ofToString(contents[contentNum].social.x);
+			save += "," + ofToString(contents[contentNum].social.y);
+
+			save += "," + ofToString(contents[contentNum].econ.x);
+			save += "," + ofToString(contents[contentNum].econ.y);
+
+			save += "," + ofToString(contents[contentNum].religeous);
+			save += "," + ofToString(contents[contentNum].confidence);
+
+			std::cout << save << std::endl;
+
+
+
 			if (contentNum < contents.size() - 1) {
 				contentNum++;
 			}
@@ -116,4 +134,15 @@ void ofApp::gotMessage(ofMessage msg){
 //--------------------------------------------------------------
 void ofApp::dragEvent(ofDragInfo dragInfo){ 
 
+}
+
+string ofApp::getExtFromPath(string _path) {
+	if (ofSplitString(_path, ".").size() > 0) {
+		string ret = ofSplitString(_path, ".")[1];
+		return ret;
+		std::cout << ret << std::endl;
+	}
+	else {
+		return ".NaN";
+	}
 }
