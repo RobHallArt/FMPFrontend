@@ -18,7 +18,6 @@ void content::importContent(string _path) {
 	}
 	else {
 		std::cout << "Didn't Work" << std::endl;
-		//file.create();
 		importSuccess = false;
 	}
 
@@ -36,14 +35,11 @@ void content::parseMeta() {
 		std::cout << buf.getText() << std::endl;
 		string str = buf.getText();
 
-		social.x = ofToFloat(ofSplitString(str, ",")[0]);
-		social.y = ofToFloat(ofSplitString(str, ",")[1]);
+		graph.x = ofToFloat(ofSplitString(str, ",")[0]);
+		graph.y = ofToFloat(ofSplitString(str, ",")[1]);
 
-		econ.x = ofToFloat(ofSplitString(str, ",")[2]);
-		econ.y = ofToFloat(ofSplitString(str, ",")[3]);
-
-		religeous = ofToFloat(ofSplitString(str, ",")[4]);
-		confidence = ofToFloat(ofSplitString(str, ",")[5]);
+		religeous = ofToFloat(ofSplitString(str, ",")[2]);
+		confidence = ofToFloat(ofSplitString(str, ",")[3]);
 
 	}
 }

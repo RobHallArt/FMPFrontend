@@ -17,8 +17,8 @@ class content {
 
 		ofFile file;
 
-		glm::vec2 social;
-		glm::vec2 econ;
+		glm::vec2 graph;
+
 
 		float religeous;
 		float confidence;
