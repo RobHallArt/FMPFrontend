@@ -6,6 +6,8 @@
 #include "graphInput.h"
 #include "animator.h"
 #include "button.h"
+#include "ofxArtnet.h"
+
 
 class ofApp : public ofBaseApp{
 
@@ -29,15 +31,23 @@ class ofApp : public ofBaseApp{
 		void setLighting(int channel, int value);
 		void printGraph();
 
+		ofxArtnetSender artnet;
+		ofPixels data;
+
 		vector<content>contents;
 		int contentNum;
 		int programMode;
 		int lightingMode;
+		int lightingShootChannel;
+		int lightingModeChannel;
+		int lightingFadeChannel;
+
 		bool debug;
 		bool verbose;
 		vector<ofImage> menus;
 
 		int timer;
+		int timer2;
 
 		glm::vec2 graph;
 
@@ -50,6 +60,7 @@ class ofApp : public ofBaseApp{
 		vector<react> reacts;
 
 		ofImage angryReact;
+		ofImage printImage;
 
 		string getExtFromPath(string _path);
 

@@ -3,10 +3,25 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	//some path, may be absolute or relative to bin/data
+	artnet.setup("192.168.1.255", 0);
+	data.allocate(10, 1, OF_PIXELS_MONO);
+	for (int i = 0; i < data.getWidth(); i++) {
+		data[i] = 0;
+	}
+
+	lightingShootChannel = 1;
+	lightingFadeChannel = 3;
+	lightingModeChannel = 4;
+
+	setLighting(lightingShootChannel, 0);
+	setLighting(lightingFadeChannel, 3);
+	setLighting(lightingModeChannel, 1);
+
 	string contentPath = "\content";
 	ofDirectory contentDir(contentPath);
 	programMode = 0;
 	timer = 0;
+	timer2 = 0;
 	debug = true;
 	verbose = false;
 
@@ -52,6 +67,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
 	//std::cout << ofGetElapsedTimeMillis() << std::endl;
+	
 	for (int i = 0; i < reacts.size(); i++) {
 		reacts[i].update(i);
 	}
@@ -62,6 +78,15 @@ void ofApp::update(){
 		timer--;
 		std::cout << "Timer : " << timer << std::endl;
 	}
+
+	if (timer2 <= 0) {
+		timer2 = 0;
+	}
+	else {
+		timer2--;
+		std::cout << "Timer2 : " << timer2 << std::endl;
+	}
+
 	if (timer == 0 && programMode == 5) {
 		programMode = 6;
 		timer = 300;
@@ -74,11 +99,18 @@ void ofApp::update(){
 	if (timer == 0 && programMode == 6) {
 		programMode = 10;
 		timer = 2000;
+		setLighting(lightingShootChannel, 250);
+		timer2 = 60;
 	}
+
 	if (timer == 0 && programMode == 10) {
 		programMode = 0;
 	}
 
+	if (timer2 == 0 && programMode == 10) {
+		setLighting(lightingShootChannel, 0);
+	}
+	
 }
 
 //--------------------------------------------------------------
@@ -309,7 +341,14 @@ string ofApp::getExtFromPath(string _path) {
 }
 
 void ofApp::setLighting(int channel, int value) {
+	if (channel >= 1) {
+		data[channel - 1] = value;
+	}
+	else {
+		std::cout << "DMX CHANNEL OUT OF RANGE" << std::endl;
+	}
 
+	artnet.sendArtnet(data);
 }
 
 void ofApp::printGraph() {
@@ -317,6 +356,11 @@ void ofApp::printGraph() {
 	ofPushStyle();
 
 
+
+	printImage.grabScreen(0, 0, 200, 400);
+	printImage.save("output.png");
+
+	system("printOutput.bat");
 
 	ofPopMatrix();
 	ofPopStyle();
