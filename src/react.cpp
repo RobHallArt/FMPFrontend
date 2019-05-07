@@ -82,12 +82,12 @@ void react::clickAnim(glm::vec2 _mousePos, int _react) {
 	//float imagePosx = ofGetWidth()*0.11 + (_react * ((ofGetWidth()*0.8) / 5)) + imageWidth;
 	//ofTranslate(imagePosx, ofGetHeight()*0.7);
 
-	std::cout << _react << " : " << ofDist(_mousePos.x, _mousePos.y, imagePosx, ofGetHeight()*0.7) << " : " << imageWidth << std::endl;
+	//std::cout << _react << " : " << ofDist(_mousePos.x, _mousePos.y, imagePosx, ofGetHeight()*0.7) << " : " << imageWidth << std::endl;
 
 	if (ofDist(_mousePos.x, _mousePos.y, imagePosx, ofGetHeight()*0.8) < imageWidth*0.5) {
 		//return TRUE;
 		animating = TRUE;
-		std::cout << _react << " : Clicked" << std::endl;
+		//std::cout << _react << " : Clicked" << std::endl;
 	}
 	else {
 		//return FALSE;

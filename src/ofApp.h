@@ -4,6 +4,8 @@
 #include "content.h"
 #include "react.h"
 #include "graphInput.h"
+#include "animator.h"
+#include "button.h"
 
 class ofApp : public ofBaseApp{
 
@@ -24,13 +26,26 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+		void setLighting(int channel, int value);
+		void printGraph();
+
 		vector<content>contents;
 		int contentNum;
+		int programMode;
+		int lightingMode;
+		bool debug;
+		bool verbose;
+		vector<ofImage> menus;
+
+		int timer;
 
 		glm::vec2 graph;
 
 		float religeous;
 		float confidence;
+
+		button end{ "End Experience" };
+		button playOn{ "Target Me!" };
 
 		vector<react> reacts;
 
