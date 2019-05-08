@@ -10,12 +10,12 @@ void ofApp::setup(){
 	}
 
 	lightingShootChannel = 1;
-	lightingFadeChannel = 3;
 	lightingModeChannel = 4;
 
+	font.load("Roboto-Regulat.ttf", 48);
+
 	setLighting(lightingShootChannel, 0);
-	setLighting(lightingFadeChannel, 3);
-	setLighting(lightingModeChannel, 1);
+	setLighting(lightingModeChannel, 0);
 
 	string contentPath = "\content";
 	ofDirectory contentDir(contentPath);

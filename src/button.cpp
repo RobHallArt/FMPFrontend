@@ -2,7 +2,8 @@
 
 button::button(string _title) {
 
-	title = _title;
+	title = _title; 
+	font.load("Roboto-Regular.ttf", 32);
 }
 
 void button::draw(glm::vec2 _position, glm::vec2 _size) {
@@ -25,7 +26,8 @@ void button::draw(glm::vec2 _position, glm::vec2 _size) {
 		ofPopStyle();
 		ofPushStyle();
 		ofSetColor(0);
-		ofDrawBitmapString(title, ofGetWidth()*0.02, ofGetWidth()*0.02);
+		//ofDrawBitmapString(title, ofGetWidth()*0.02, ofGetWidth()*0.02);
+		font.drawString(title, ofGetWidth()*0.02, ofGetWidth()*0.04);
 		ofPopStyle();
 		ofPopMatrix();
 

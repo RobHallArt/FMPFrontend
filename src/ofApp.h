@@ -63,6 +63,8 @@ class ofApp : public ofBaseApp{
 		ofImage printImage;
 		ofImage receipt;
 
+		ofTrueTypeFont font;
+
 		string getExtFromPath(string _path);
 
 		graphInput graphDraw{ glm::vec2(ofGetWidth()*0.05, ofGetWidth()*0.05), glm::vec2(ofGetWidth()*0.4,ofGetWidth()*0.4), glm::vec2(0,0), "Political Compass" };
