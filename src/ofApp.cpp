@@ -25,6 +25,7 @@ void ofApp::setup(){
 	debug = true;
 	verbose = false;
 
+	receipt.load("Receipt_Template.png");
 	
 	//only show png files
 	//dir.allowExt("png");
@@ -41,6 +42,7 @@ void ofApp::setup(){
 	menus.push_back(temp);
 	temp.loadImage("menus/MenuSystem-04.png");
 	menus.push_back(temp);
+
 
 	//go through and print out all the paths
 	for (int i = 0; i < contentDir.size(); i++) {
@@ -180,6 +182,10 @@ void ofApp::keyPressed(int key){
 		std::cout << save << std::endl;
 	}
 
+	if (key == 'b') {
+		printGraph();
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -266,10 +272,12 @@ void ofApp::mousePressed(int x, int y, int button){
 					
 
 					if (glm::distance(graph, glm::vec2(0, 0)) <0.5) {
+						printGraph();
 						programMode = 5;
 						timer = 200;
 					}
 					else {
+						printGraph();
 						programMode = 7;
 						timer = 200;
 					}
@@ -354,10 +362,22 @@ void ofApp::setLighting(int channel, int value) {
 void ofApp::printGraph() {
 	ofPushMatrix();
 	ofPushStyle();
+	ofSetColor(255);
+	ofDrawRectangle(0,0,200,600);
+	receipt.draw(0, 0, 200, 600);
+	ofSetColor(0);
+	ofPushMatrix();
+	ofTranslate(25, 75);
+	ofDrawLine(75, 0, 75, 150);
+	ofDrawLine(0, 75, 150, 75);
+	ofPushMatrix();
+	ofTranslate(75, 75);
+	ofTranslate(ofMap(graph.x, -1, 1, -75, 75), ofMap(graph.y, -1, 1, -75, 75));
+	ofDrawEllipse(0, 0, 10, 10);
+	ofPopMatrix();
+	ofPopMatrix();
 
-
-
-	printImage.grabScreen(0, 0, 200, 400);
+	printImage.grabScreen(0, 0, 200, 600);
 	printImage.save("output.png");
 
 	system("printOutput.bat");

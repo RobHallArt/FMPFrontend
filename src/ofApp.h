@@ -61,6 +61,7 @@ class ofApp : public ofBaseApp{
 
 		ofImage angryReact;
 		ofImage printImage;
+		ofImage receipt;
 
 		string getExtFromPath(string _path);
 
