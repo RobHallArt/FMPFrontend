@@ -91,6 +91,7 @@ void ofApp::update(){
 
 	if (timer == 0 && programMode == 5) {
 		programMode = 6;
+		setLighting(lightingModeChannel, 75);
 		timer = 300;
 	}
 
@@ -102,15 +103,18 @@ void ofApp::update(){
 		programMode = 10;
 		timer = 2000;
 		setLighting(lightingShootChannel, 250);
+		setLighting(lightingModeChannel, 145);
 		timer2 = 60;
 	}
 
 	if (timer == 0 && programMode == 10) {
 		programMode = 0;
+		setLighting(lightingModeChannel, 45);
 	}
 
 	if (timer2 == 0 && programMode == 10) {
 		setLighting(lightingShootChannel, 0);
+		setLighting(lightingModeChannel, 0);
 	}
 	
 }
@@ -278,6 +282,7 @@ void ofApp::mousePressed(int x, int y, int button){
 					}
 					else {
 						printGraph();
+						setLighting(lightingModeChannel, 105);
 						programMode = 7;
 						timer = 200;
 					}
@@ -295,11 +300,13 @@ void ofApp::mousePressed(int x, int y, int button){
 	if (programMode == 8) {
 		if (end.mousePressed(x, y)) {
 			programMode = 10;
+			setLighting(lightingModeChannel, 0);
 			timer = 2000;
 		}
 	
 		if (playOn.mousePressed(x, y)) {
 			programMode = 6;
+			setLighting(lightingModeChannel, 75);
 			timer = 300;
 		}
 	}
