@@ -3,14 +3,14 @@
 //--------------------------------------------------------------
 void ofApp::setup(){
 	//some path, may be absolute or relative to bin/data
-	artnet.setup("192.168.1.255", 0);
+	artnet.setup("10.193.28.255", 0);
 	data.allocate(10, 1, OF_PIXELS_MONO);
 	for (int i = 0; i < data.getWidth(); i++) {
 		data[i] = 0;
 	}
 
 	lightingShootChannel = 1;
-	lightingModeChannel = 4;
+	lightingModeChannel = 6;
 
 	font.load("Roboto-Regulat.ttf", 48);
 
