@@ -11,6 +11,7 @@ graphInput::graphInput(glm::vec2 _position, glm::vec2 _size, glm::vec2 _vecValue
 
 	mode = 2;
 }
+
 // Construct 1D graph (Slider)
 graphInput::graphInput(glm::vec2 _position, glm::vec2 _size, float _fltValue, string _title) {
 	position = _position;
@@ -20,6 +21,7 @@ graphInput::graphInput(glm::vec2 _position, glm::vec2 _size, float _fltValue, st
 
 	mode = 1;
 }
+
 // Draw graph.
 void graphInput::draw(glm::vec2 _position, glm::vec2 _size) {
 
