@@ -2,35 +2,40 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	//some path, may be absolute or relative to bin/data
+	// Set Up ArtNet Sender - Last byte set to 255 to broadcast to every ArtNet node on subnet.
 	artnet.setup("10.193.28.255", 0);
+	// Allocate 10 mono pixels which represent dmx channels.
 	data.allocate(10, 1, OF_PIXELS_MONO);
+
+	// Set all the channels to 0.
 	for (int i = 0; i < data.getWidth(); i++) {
 		data[i] = 0;
 	}
 
+	// Set which channel is used for the air cannon and the lighting.
 	lightingShootChannel = 1;
 	lightingModeChannel = 6;
 
-	font.load("Roboto-Regulat.ttf", 48);
-
-	setLighting(lightingShootChannel, 0);
-	setLighting(lightingModeChannel, 0);
-
-	string contentPath = "\content";
-	ofDirectory contentDir(contentPath);
+	// Set variable defaults.
 	programMode = 0;
 	timer = 0;
 	timer2 = 0;
-	debug = true;
+	debug = false;
 	verbose = false;
 
+	// Set the relevant channels to the default value.
+	setLighting(lightingShootChannel, 0);
+	setLighting(lightingModeChannel, 0);
+
+	// Set up the directory to look in for content.
+	string contentPath = "\content";
+	ofDirectory contentDir(contentPath);
+	contentDir.listDir();
+
+	// Load the image with the receipt template.
 	receipt.load("Receipt_Template.png");
 	
-	//only show png files
-	//dir.allowExt("png");
-	//populate the directory object
-	contentDir.listDir();
+	// Load menus into menu array.
 	ofImage temp;
 	temp.loadImage("menus/TitleCard.png");
 	menus.push_back(temp);
@@ -44,51 +49,52 @@ void ofApp::setup(){
 	menus.push_back(temp);
 
 
-	//go through and print out all the paths
+	// Loop through content and add it to content array.
 	for (int i = 0; i < contentDir.size(); i++) {
+		// Check if content is an image.
 		if (getExtFromPath(contentDir.getPath(i)) == "jpg" || getExtFromPath(contentDir.getPath(i)) == "png") {
+			// Push content into array.
 			contents.push_back(content(contentDir.getPath(i)));
 		}
 		
 	}
 
+	// Loop through reacts.
 	for (int i = 0; i < 5; i++) {
-		std::cout << ofToString(i) + ".png" << std::endl;
-		//ofImage temp;
-		//temp.load("reacts/" + ofToString(i) + ".png");
-		//temp.setAnchorPercent(temp.getWidth()*0.5, temp.getHeight()*0.5);
+		// Push back reacts into array.
+		if (debug) { std::cout << ofToString(i) + ".png" << std::endl; }
 		reacts.push_back(react("reacts/" + ofToString(i) + ".png"));
 	}
 
+	// Reset graphs drawn when debugging.
 	graphDraw.vecValue = graph;
-	religeousSlider.fltValue = religeous;
-	confidenceSlider.fltValue = confidence;
-	
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	//std::cout << ofGetElapsedTimeMillis() << std::endl;
 	
+	// Update animation of reacts.
 	for (int i = 0; i < reacts.size(); i++) {
 		reacts[i].update(i);
 	}
+
+	// Update timers.
 	if (timer <= 0) {
 		timer = 0;
 	}
 	else {
 		timer--;
-		std::cout << "Timer : " << timer << std::endl;
+		if (debug) { std::cout << "Timer : " << timer << std::endl; }
 	}
-
 	if (timer2 <= 0) {
 		timer2 = 0;
 	}
 	else {
 		timer2--;
-		std::cout << "Timer2 : " << timer2 << std::endl;
+		if (debug) { std::cout << "Timer2 : " << timer2 << std::endl; }
 	}
 
+	// Check timers and update program and ArtNet DMX signals accordingly.
 	if (timer == 0 && programMode == 5) {
 		programMode = 6;
 		setLighting(lightingModeChannel, 75);
@@ -121,11 +127,18 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+
+	// Set fallback background to represent Facebook background colour.
 	ofSetBackgroundColor(247,247,247);
+
+	// Draw different scenes based on programMode. Now I read it this could have been a switch statement just as easily.
+
+	// Title Card
 	if (programMode == 0) {
 		menus[0].draw(0, 0, ofGetWidth(), ofGetHeight());
 	}
 
+	// Reacting to content
 	if (programMode == 3) {
 		contents[contentNum].draw();
 
@@ -133,61 +146,74 @@ void ofApp::draw(){
 			reacts[i].draw(i);
 		}
 
+		// If the debug flag is true, draw graphs over the top to make sure reactions are doing the right thing to the rating of the user.
 		if (debug) {
 			graphDraw.draw(glm::vec2(ofGetWidth()*0.05, ofGetWidth()*0.05), glm::vec2(ofGetWidth()*0.4, ofGetWidth()*0.4));
-			religeousSlider.draw(glm::vec2(ofGetWidth()*0.05, ofGetWidth()*0.50), glm::vec2(ofGetWidth()*0.4, ofGetWidth()*0.1));
-			confidenceSlider.draw(glm::vec2(ofGetWidth()*0.55, ofGetWidth()*0.50), glm::vec2(ofGetWidth()*0.4, ofGetWidth()*0.1));
 		}
 
 	}
 
+	// You have met the criteria of the intended demographic
 	if (programMode == 5) {
 		menus[1].draw(0, 0, ofGetWidth(), ofGetHeight());
 	}
+	
+	// You have not met the criteria of the intended deomgraphic.
 	if (programMode == 7){
 		menus[3].draw(0, 0, ofGetWidth(), ofGetHeight());
-
 	}
 
+	// You have been targeted (Background fades to red based on timer).
 	if (programMode == 6) {
 		ofSetBackgroundColor(247, ofMap(timer, 300, 0, 247, 0), ofMap(timer, 300, 0, 247, 0));
 		ofSetColor(255);
 		menus[2].draw(0, 0, ofGetWidth(), ofGetHeight());
 	}
 
+	// Do you want to experience targeting? Buttons are drawn to pick.
 	if (programMode == 8) {
 		menus[4].draw(0, 0, ofGetWidth(), ofGetHeight());
 		end.draw(glm::vec2(ofGetWidth()*0.2, ofGetHeight()*0.7),glm::vec2(ofGetWidth()*0.2,ofGetHeight()*0.2));
 		playOn.draw(glm::vec2(ofGetWidth()*0.6, ofGetHeight()*0.7), glm::vec2(ofGetWidth()*0.2, ofGetHeight()*0.2));
 	}
 
+	// End of Program (Black Screen)
 	if (programMode == 10) {
 		ofSetBackgroundColor(0);
 	}
 
-	ofPushStyle();
-	ofSetColor(255, 0, 0);
-	ofDrawBitmapString(programMode, 100, 100);
-	ofPopStyle();
+	// If debugging, draw programMode in top left of display.
+	if (debug) {
+		ofPushStyle();
+		ofSetColor(255, 0, 0);
+		ofDrawBitmapString(programMode, 100, 100);
+		ofPopStyle();
+	}
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
 
-	if (key == 's') {
-		string save;
+	// Debugging Tools
+	if (debug) {
 
-		save = ofToString(graph.x);
-		save += "," + ofToString(graph.y);
+		// If key S is pressed print out values from user political graph to console.
+		if (key == 's') {
+			string save;
 
-		save += "," + ofToString(religeous);
-		//save += "," + ofToString(confidence);
+			save = ofToString(graph.x);
+			save += "," + ofToString(graph.y);
 
-		std::cout << save << std::endl;
-	}
+			save += "," + ofToString(religeous);
+			//save += "," + ofToString(confidence);
 
-	if (key == 'b') {
-		printGraph();
+			std::cout << save << std::endl;
+		}
+
+		// If B key pressed run printer code.
+		if (key == 'b') {
+			printGraph();
+		}
 	}
 
 }
@@ -209,32 +235,42 @@ void ofApp::mouseDragged(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
+
+	// If statements for checking touch events.
+
+	// If programMode is 0 (Welcome Screen) a touch anywhere will skip to programMode 3 (Reacting) 
 	if (programMode == 0) {
 		programMode = 3;
 	}
 
+	// If programMode is 3 (Reacting) listen for clicked reacts and make appropriate adjustments to graph.
 	if (programMode == 3) {
+		// Angry Clicked
 		if (reacts[0].amClicked(glm::vec2(x, y), 0)) {
 			graph.y -= contents[contentNum].graph.y*contents[contentNum].confidence;
 			graph.x -= contents[contentNum].graph.x*contents[contentNum].confidence;
 
 			religeous -= contents[contentNum].religeous*contents[contentNum].confidence;
 		}
+		// Sad Clicked
 		if (reacts[1].amClicked(glm::vec2(x, y), 0)) {
 			graph.y -= contents[contentNum].graph.y*(contents[contentNum].confidence*0.5);
 			graph.x -= contents[contentNum].graph.x*(contents[contentNum].confidence*0.5);
 
 			religeous -= contents[contentNum].religeous*(contents[contentNum].confidence*0.5);
 		}
+		// Indifferent Clicked
 		if (reacts[2].amClicked(glm::vec2(x, y), 0)) {
 			// Do nothing cause indifferent
 		}
+		// Like Clicked
 		if (reacts[3].amClicked(glm::vec2(x, y), 0)) {
 			graph.y += contents[contentNum].graph.y*(contents[contentNum].confidence*0.5);
 			graph.x += contents[contentNum].graph.x*(contents[contentNum].confidence*0.5);
 
 			religeous += contents[contentNum].religeous*(contents[contentNum].confidence*0.5);
 		}
+		// Love Clicked
 		if (reacts[4].amClicked(glm::vec2(x, y), 0)) {
 			graph.y += contents[contentNum].graph.y*contents[contentNum].confidence;
 			graph.x += contents[contentNum].graph.x*(contents[contentNum].confidence*0.5);
@@ -242,6 +278,7 @@ void ofApp::mousePressed(int x, int y, int button){
 			religeous += contents[contentNum].religeous*contents[contentNum].confidence;
 		}
 
+		// Keep point from leaving graph.
 		if (graph.x > 1) {
 			graph.x = 1;
 		}
@@ -261,20 +298,22 @@ void ofApp::mousePressed(int x, int y, int button){
 			religeous = 0;
 		}
 
+		// Loop through reacts.
 		for (int i = 0; i < reacts.size(); i++) {
+			// Start animating.
 			reacts[i].clickAnim(glm::vec2(x, y), i);
+			// On click of react.
 			if (reacts[i].amClicked(glm::vec2(x, y), i)) {
-
+				// If more content exists go onto next piece.
 				if (contentNum < contents.size() - 1) {
 					contentNum++;
 					if (verbose) { std::cout << glm::distance(graphDraw.vecValue, glm::vec2(0, 0)) << std::endl; }
 				}
 				else {
-
-					programMode = 5;
+					// Otherwise reset contentNum for the next user of the program.
 					contentNum = 0;
 					
-
+					// Check if user is in target region and change to relevant programMode, run receipt printer code and set timers and lighting states as required.
 					if (glm::distance(graph, glm::vec2(0, 0)) <0.5) {
 						printGraph();
 						programMode = 5;
@@ -287,23 +326,25 @@ void ofApp::mousePressed(int x, int y, int button){
 						timer = 200;
 					}
 
+					// Reset user graph for next user.
 					graph = glm::vec2(0, 0);
 				}
 			}
 		}
-
+		
+		// Update debug graph.
 		graphDraw.vecValue = graph;
-		religeousSlider.fltValue = religeous;
-		confidenceSlider.fltValue = confidence;
 	}
 
+	// Listen for buttons on the screen where you can decide to be targeted or not.
 	if (programMode == 8) {
+		// If the end button is clicked, turn off the lights and skip to the end of the program.
 		if (end.mousePressed(x, y)) {
 			programMode = 10;
 			setLighting(lightingModeChannel, 0);
 			timer = 2000;
 		}
-	
+		// If the target me button is clicked, set lights to red and skip to the targeted page. 
 		if (playOn.mousePressed(x, y)) {
 			programMode = 6;
 			setLighting(lightingModeChannel, 75);
@@ -315,6 +356,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
+	// Run code to make buttons work better on touch screen.
 	end.mouseReleased(x, y);
 	playOn.mouseReleased(x, y);
 }
@@ -344,17 +386,23 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
+// Custom extra functions.
+
+// Get the file extension from a path or filename.
 string ofApp::getExtFromPath(string _path) {
+	// If string can be split by '.'
 	if (ofSplitString(_path, ".").size() > 0) {
+		// Return the part after the '.'
 		string ret = ofSplitString(_path, ".")[1];
 		return ret;
-		std::cout << ret << std::endl;
+		if (verbose) { std::cout << ret << std::endl; }
 	}
 	else {
 		return ".NaN";
 	}
 }
 
+// Simplified ArtNet Sender to single command.
 void ofApp::setLighting(int channel, int value) {
 	if (channel >= 1) {
 		data[channel - 1] = value;
@@ -366,7 +414,9 @@ void ofApp::setLighting(int channel, int value) {
 	artnet.sendArtnet(data);
 }
 
+// Receipt Printer code.
 void ofApp::printGraph() {
+	// This draws everything that prints on screen for one frame.
 	ofPushMatrix();
 	ofPushStyle();
 	ofSetColor(255);
@@ -384,9 +434,11 @@ void ofApp::printGraph() {
 	ofPopMatrix();
 	ofPopMatrix();
 
+	// It is then saves that section of the screen to a file.
 	printImage.grabScreen(0, 0, 200, 600);
 	printImage.save("output.png");
 
+	// Finally it runs a system command which prints the file from the command line.
 	system("printOutput.bat");
 
 	ofPopMatrix();

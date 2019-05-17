@@ -1,15 +1,21 @@
 #include "content.h"
 
+// Class for storing content with relevant data.
+
+// Constructor class
 content::content(string _path) {
 	importContent(_path);
 }
 
+// Import function loads image and data.
 void content::importContent(string _path) {
 	image.load(_path);
 	std::cout << _path << std::endl;
-
+	
+	// Path for data is the same path as the image with the extension changed.
 	datPath = ofSplitString(_path, ".")[0] + ".txt";
 
+	// If there is a file at the path then import it.
 	if (file.open(ofToDataPath(ofSplitString(_path, ".")[0] + ".txt"), ofFile::ReadWrite, false)) {
 
 		std::cout << ofSplitString(_path, ".")[0] + ".txt" << std::endl;
@@ -21,20 +27,19 @@ void content::importContent(string _path) {
 		importSuccess = false;
 	}
 
+	// Parse the contents of the imported file.
 	parseMeta();
 }
 
-void content::getContentType() {
-
-}
-
+// Function to parse the imported file.
 void content::parseMeta() {
 	if (importSuccess) {
-
+		// Load file into buffer.
 		ofBuffer buf = file.readToBuffer();
 		std::cout << buf.getText() << std::endl;
 		string str = buf.getText();
 
+		// Split buffer into variables.
 		graph.x = ofToFloat(ofSplitString(str, ",")[0]);
 		graph.y = ofToFloat(ofSplitString(str, ",")[1]);
 
@@ -44,8 +49,9 @@ void content::parseMeta() {
 	}
 }
 
+// Draw Content
 void content::draw() {
-
+	// Calculate the size and position of the image to keep the aspect ratio correct.
 	float imageHeight = ofGetHeight()*0.6;
 	float imageRatio = (imageHeight / image.getHeight());
 	float imageWidth = image.getWidth()*imageRatio;
@@ -56,17 +62,6 @@ void content::draw() {
 		imageHeight = image.getHeight()*imageRatio;
 	}
 
+	// Draw the image
 	image.draw((ofGetWidth() -imageWidth)*0.5, ofGetHeight()*0.05, imageWidth, imageHeight);
-}
-
-string content::getExtFromPath(string _path) {
-	if (ofSplitString(_path, ".").size()>0) {
-		string ret = ofSplitString(_path, ".")[1];
-		return ret;
-		std::cout << ret << std::endl;
-	}
-	else {
-		string ret = "png";
-		return ret;
-	}
 }

@@ -40,7 +40,6 @@ class ofApp : public ofBaseApp{
 		int lightingMode;
 		int lightingShootChannel;
 		int lightingModeChannel;
-		int lightingFadeChannel;
 
 		bool debug;
 		bool verbose;
@@ -68,6 +67,4 @@ class ofApp : public ofBaseApp{
 		string getExtFromPath(string _path);
 
 		graphInput graphDraw{ glm::vec2(ofGetWidth()*0.05, ofGetWidth()*0.05), glm::vec2(ofGetWidth()*0.4,ofGetWidth()*0.4), glm::vec2(0,0), "Political Compass" };
-		graphInput religeousSlider{ glm::vec2(ofGetWidth()*0.05, ofGetWidth()*0.55), glm::vec2(ofGetWidth()*0.4,ofGetWidth()*0.1), 0, "Religeous Slider" };
-		graphInput confidenceSlider{ glm::vec2(ofGetWidth()*0.55, ofGetWidth()*0.55), glm::vec2(ofGetWidth()*0.4,ofGetWidth()*0.1), 0, "Confidence Slider" };
 };

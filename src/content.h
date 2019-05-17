@@ -27,13 +27,10 @@ class content {
 
 		void importContent(string _path);			// Will have internal string to capture imported metadata for processing.
 
-		void getContentType();
 
 		void parseMeta();
 
 		void draw();
-
-		string getExtFromPath(string _path);
 
 		
 		
