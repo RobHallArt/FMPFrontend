@@ -107,7 +107,7 @@ void ofApp::update(){
 
 	if (timer == 0 && programMode == 6) {
 		programMode = 10;
-		timer = 2000;
+		timer = 500;
 		setLighting(lightingShootChannel, 250);
 		setLighting(lightingModeChannel, 145);
 		timer2 = 60;
@@ -342,7 +342,7 @@ void ofApp::mousePressed(int x, int y, int button){
 		if (end.mousePressed(x, y)) {
 			programMode = 10;
 			setLighting(lightingModeChannel, 0);
-			timer = 2000;
+			timer = 500;
 		}
 		// If the target me button is clicked, set lights to red and skip to the targeted page. 
 		if (playOn.mousePressed(x, y)) {
